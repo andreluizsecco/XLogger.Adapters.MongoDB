@@ -20,6 +20,11 @@ namespace XLogger.Adapters.MongoDB
                 new ConventionPack{ new IgnoreIfDefaultConvention(true) }, f => true);
         }
 
+        /// <summary>
+        /// Inserts a single document.
+        /// </summary>
+        /// <typeparam name="TDocument">the document type.</typeparam>
+        /// <param name="document">the document.</param>
         public void InsertOne<TDocument>(TDocument document)
         {
             var collection = _database.GetCollection<TDocument>(_loggerOptions);
