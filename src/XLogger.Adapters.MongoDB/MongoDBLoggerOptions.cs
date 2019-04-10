@@ -18,17 +18,17 @@ namespace XLogger.Adapters.MongoDB
         public string CollectionName { get; set; }
         
         /// <summary>
-        /// Option to create a capped collection.
+        /// Option to create a capped collection. Default is false.
         /// </summary>
         public bool Capped { get; set; }
 
         /// <summary>
-        /// Max total size in bytes of the created capped collection.
+        /// Max total size in bytes of the created capped collection. Default is 100000000 bytes.
         /// </summary>
         public long MaxSize { get; set; }
 
         /// <summary>
-        /// Max number of documents of the created capped collection.
+        /// Max number of documents of the created capped collection. Default is 1000 documents.
         /// </summary>
         public long MaxDocuments { get; set; }
 
@@ -40,6 +40,8 @@ namespace XLogger.Adapters.MongoDB
         {
             CollectionName = "logs";
             Capped = false;
+            MaxSize = 100000000;
+            MaxDocuments = 1000;
         }
 
         /// <summary>
