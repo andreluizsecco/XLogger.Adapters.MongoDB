@@ -50,20 +50,20 @@ namespace XLogger.Adapters.MongoDB
         /// <param name="configuration">Represents a set of key/value application configuration properties. See <see cref="IConfiguration"/>.</param>
         public override void ReadFromConfiguration(IConfiguration configuration)
         {
-            var consoleConfiguration = configuration?.GetSection("XLogger:MongoDB");
-            if (consoleConfiguration == null)
+            var mongoConfiguration = configuration?.GetSection("XLogger:MongoDB");
+            if (mongoConfiguration == null)
                 throw new System.Exception("Could not load the adapter configuration properties. Make sure the application settings have the XLogger:MongoDB section.");
             
-            var logLevel = consoleConfiguration[nameof(LogLevel)];
+            var logLevel = mongoConfiguration[nameof(LogLevel)];
             if (!string.IsNullOrEmpty(logLevel))
                 LogLevel = (LogLevel)int.Parse(logLevel);
-            OnDemand = bool.Parse(consoleConfiguration[nameof(OnDemand)] ?? OnDemand.ToString());
+            OnDemand = bool.Parse(mongoConfiguration[nameof(OnDemand)] ?? OnDemand.ToString());
 
-            DatabaseUrl = consoleConfiguration[nameof(DatabaseUrl)] ?? DatabaseUrl;
-            CollectionName = consoleConfiguration[nameof(CollectionName)] ?? CollectionName;
-            Capped = bool.Parse(consoleConfiguration[nameof(Capped)] ?? Capped.ToString());
-            MaxSize = long.Parse(consoleConfiguration[nameof(MaxSize)] ?? MaxSize.ToString());
-            MaxDocuments = long.Parse(consoleConfiguration[nameof(MaxDocuments)] ?? MaxDocuments.ToString());
+            DatabaseUrl = mongoConfiguration[nameof(DatabaseUrl)] ?? DatabaseUrl;
+            CollectionName = mongoConfiguration[nameof(CollectionName)] ?? CollectionName;
+            Capped = bool.Parse(mongoConfiguration[nameof(Capped)] ?? Capped.ToString());
+            MaxSize = long.Parse(mongoConfiguration[nameof(MaxSize)] ?? MaxSize.ToString());
+            MaxDocuments = long.Parse(mongoConfiguration[nameof(MaxDocuments)] ?? MaxDocuments.ToString());
         }
     }
 }
