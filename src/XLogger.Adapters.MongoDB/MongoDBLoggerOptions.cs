@@ -50,7 +50,9 @@ namespace XLogger.Adapters.MongoDB
         /// <param name="configuration">Represents a set of key/value application configuration properties. See <see cref="IConfiguration"/>.</param>
         public override void ReadFromConfiguration(IConfiguration configuration)
         {
-            var consoleConfiguration = configuration.GetSection("XLogger:MongoDB");
+            var consoleConfiguration = configuration?.GetSection("XLogger:MongoDB");
+            if (consoleConfiguration == null)
+                throw new System.Exception("Could not load the adapter configuration properties. Make sure the application settings have the XLogger:MongoDB section.");
             
             var logLevel = consoleConfiguration[nameof(LogLevel)];
             if (!string.IsNullOrEmpty(logLevel))
