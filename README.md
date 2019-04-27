@@ -1,4 +1,5 @@
-# XLogger.Adapters.MongoDB
+![](https://raw.githubusercontent.com/andreluizsecco/XLogger.Adapters.MongoDB/dev/logo_horizontal.png)
+
 XLogger adapter to write logs in the MongoDB database
 
 [![License](https://img.shields.io/github/license/andreluizsecco/XLogger.Adapters.MongoDB.svg)](LICENSE)
