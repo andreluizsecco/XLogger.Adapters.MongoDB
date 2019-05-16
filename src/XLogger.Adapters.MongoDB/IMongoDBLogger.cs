@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace XLogger.Adapters.MongoDB
 {
     public interface IMongoDBLogger : ILogger
@@ -8,5 +10,12 @@ namespace XLogger.Adapters.MongoDB
         /// <typeparam name="TData">type of entry.</typeparam>
         /// <param name="data">The entry to be written. Can be also an object.</param>
         void Write<TData>(TData data);
+
+        /// <summary>
+        /// Writes a log entry.
+        /// </summary>
+        /// <typeparam name="TData">type of entry.</typeparam>
+        /// <param name="data">The entry to be written. Can be also an object.</param>
+        Task WriteAsync<TData>(TData data);
     }
 }

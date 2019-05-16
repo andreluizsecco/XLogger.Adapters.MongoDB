@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading.Tasks;
 using MongoDB.Driver;
 
 namespace XLogger.Adapters.MongoDB
@@ -28,6 +29,28 @@ namespace XLogger.Adapters.MongoDB
         }
 
         /// <summary>
+        /// Gets a collection. If not exists, creates the collection with the specified options.
+        /// </summary>
+        /// <typeparam name="TDocument">the document type.</typeparam>
+        /// <param name="database">MongoDB database.</param>
+        /// <param name="options">MongoDB logger options.</param>
+        /// <returns>An implementation of a collection.</returns>
+        public static async Task<IMongoCollection<TDocument>> GetCollectionAsync<TDocument>(this IMongoDatabase database, MongoDBLoggerOptions options)
+        {
+            var collection = await database.GetCollectionAsync<TDocument>(options);
+            if (!collection.Exists())
+            {
+                var collectionOptions = new CreateCollectionOptions();
+                collectionOptions.Capped = options.Capped;
+                collectionOptions.MaxSize = options.MaxSize;
+                collectionOptions.MaxDocuments = options.MaxDocuments;
+
+                await database.CreateCollectionAsync(options.CollectionName, collectionOptions);
+            }
+            return collection;
+        }
+
+        /// <summary>
         /// Checks if a collection exists in the database.
         /// </summary>
         /// <typeparam name="TDocument">the document type.</typeparam>
@@ -36,6 +59,18 @@ namespace XLogger.Adapters.MongoDB
         public static bool Exists<TDocument>(this IMongoCollection<TDocument> collection)
         {
             return collection.Database.ListCollectionNames()
+                .ToList().Any(collectionName => collectionName.Equals(collection.CollectionNamespace.CollectionName));
+        }
+
+        /// <summary>
+        /// Checks if a collection exists in the database.
+        /// </summary>
+        /// <typeparam name="TDocument">the document type.</typeparam>
+        /// <param name="collection">MongoDB collection instance.</param>
+        /// <returns>True if exists.</returns>
+        public static async Task<bool> ExistsAsync<TDocument>(this IMongoCollection<TDocument> collection)
+        {
+            return (await collection.Database.ListCollectionNamesAsync())
                 .ToList().Any(collectionName => collectionName.Equals(collection.CollectionNamespace.CollectionName));
         }
     }
