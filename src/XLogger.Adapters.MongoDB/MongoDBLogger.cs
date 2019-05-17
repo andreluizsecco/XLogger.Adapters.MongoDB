@@ -1,10 +1,10 @@
+using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
-using MongoDB.Driver;
-using XLogger.Models;
+using XLogger.Adapters.MongoDB.Models;
 using XLogger.Options;
 
 namespace XLogger.Adapters.MongoDB
@@ -57,6 +57,35 @@ namespace XLogger.Adapters.MongoDB
         public async Task WriteAsync<TData>(TData data) =>
             await _mongoDBContext.InsertOneAsync(data);
 
+        private object CreateDefaultLogObject<TData>(DateTime datetime, LogLevel logLevel, TData data, Exception exception)
+        {
+            object customException = null;
+            if (exception != null)
+                customException = new
+                {
+                    exception.HResult,
+                    exception.HelpLink,
+                    InnerException = new
+                    {
+                        exception.InnerException?.HResult,
+                        exception.InnerException?.HelpLink,
+                        exception.InnerException?.Message,
+                        exception.InnerException?.Source,
+                        exception.InnerException?.StackTrace
+                    },
+                    exception.Message,
+                    exception.Source,
+                    exception.StackTrace
+                };
+            return new
+            {   
+                DateTime = DateTime.Now,
+                LogLevel = logLevel,
+                Data = data,
+                Exception = customException
+            };
+        }
+
         /// <summary>
         /// Writes a log entry.
         /// </summary>
@@ -68,11 +97,11 @@ namespace XLogger.Adapters.MongoDB
         public void Write<TData>(LogLevel logLevel, TData data, Exception exception = null, Func<TData, Exception, object> formatter = null)
         {
             if (formatter != null)
-                _mongoDBContext.InsertOne<object>(formatter.Invoke(data, exception));
+                _mongoDBContext.InsertOne(formatter.Invoke(data, exception));
             else
             {
-                var log = new Log<TData>(DateTime.Now, logLevel, data, exception);
-                _mongoDBContext.InsertOne<object>(log);
+                var log = CreateDefaultLogObject(DateTime.Now, logLevel, data, exception);
+                _mongoDBContext.InsertOne(log);
             }
         }
 
@@ -87,11 +116,11 @@ namespace XLogger.Adapters.MongoDB
         public async Task WriteAsync<TData>(LogLevel logLevel, TData data, Exception exception = null, Func<TData, Exception, object> formatter = null)
         {
             if (formatter != null)
-                await _mongoDBContext.InsertOneAsync<object>(formatter.Invoke(data, exception));
+                await _mongoDBContext.InsertOneAsync(formatter.Invoke(data, exception));
             else
             {
-                var log = new Log<TData>(DateTime.Now, logLevel, data, exception);
-                await _mongoDBContext.InsertOneAsync<object>(log);
+                var log = CreateDefaultLogObject(DateTime.Now, logLevel, data, exception);
+                await _mongoDBContext.InsertOneAsync(log);
             }
         }
 
@@ -233,43 +262,43 @@ namespace XLogger.Adapters.MongoDB
             await WriteAsync(LogLevel.Critical, data, exception, formatter);
 
         /// <summary>
-        /// Gets the default log documents based on filter and the find options.
+        /// Gets the custom model log documents based on filter and the find options.
         /// </summary>
-        /// <typeparam name="TData">type of entry.</typeparam>
+        /// <typeparam name="TDocument">your custom document model.</typeparam>
         /// <param name="filter">filter expression.</param>
         /// <param name="options">options for finding documents.</param>
-        /// <returns>A list of log documents.</returns>
-        public IEnumerable<Log<TData>> Get<TData>(Expression<Func<Log<TData>, bool>> filter, FindOptions options = null) =>
+        /// <returns>A list of custom model log documents.</returns>
+        public IEnumerable<TDocument> GetCustomLogs<TDocument>(Expression<Func<TDocument, bool>> filter = null, FindOptions options = null) =>
             _mongoDBContext.Get(filter, options);
 
         /// <summary>
-        /// Gets the default log documents based on filter and the find options.
+        /// Gets the custom model log documents based on filter and the find options.
         /// </summary>
-        /// <typeparam name="TData">type of entry.</typeparam>
+        /// <typeparam name="TDocument">your custom document model.</typeparam>
         /// <param name="filter">filter expression.</param>
         /// <param name="options">options for finding documents.</param>
-        /// <returns>A list of log documents.</returns>
-        public async Task<IEnumerable<Log<TData>>> GetAsync<TData>(Expression<Func<Log<TData>, bool>> filter, FindOptions<Log<TData>, Log<TData>> options = null) =>
+        /// <returns>A list of custom model log documents.</returns>
+        public async Task<IEnumerable<TDocument>> GetCustomLogsAsync<TDocument>(Expression<Func<TDocument, bool>> filter = null, FindOptions<TDocument, TDocument> options = null) =>
             await _mongoDBContext.GetAsync(filter, options);
 
         /// <summary>
-        /// Gets the custom log documents based on filter and the find options.
+        /// Gets the default model log documents based on filter and the find options.
         /// </summary>
-        /// <typeparam name="TDocument">the document type.</typeparam>
+        /// <typeparam name="TData">the data type.</typeparam>
         /// <param name="filter">filter expression.</param>
         /// <param name="options">options for finding documents.</param>
-        /// <returns>A list of custom log documents.</returns>
-        public IEnumerable<TDocument> Get<TDocument>(Expression<Func<TDocument, bool>> filter, FindOptions options = null) =>
+        /// <returns>A list of default model log documents.</returns>
+        public IEnumerable<Log<TData>> GetLogs<TData>(Expression<Func<Log<TData>, bool>> filter = null, FindOptions options = null) =>
             _mongoDBContext.Get(filter, options);
 
         /// <summary>
-        /// Gets the custom log documents based on filter and the find options.
+        /// Gets the default model log documents based on filter and the find options.
         /// </summary>
-        /// <typeparam name="TDocument">the document type.</typeparam>
+        /// <typeparam name="TData">the data type.</typeparam>
         /// <param name="filter">filter expression.</param>
         /// <param name="options">options for finding documents.</param>
-        /// <returns>A list of custom log documents.</returns>
-        public async Task<IEnumerable<TDocument>> GetAsync<TDocument>(Expression<Func<TDocument, bool>> filter, FindOptions<TDocument, TDocument> options = null) =>
+        /// <returns>A list of default model log documents.</returns>
+        public async Task<IEnumerable<Log<TData>>> GetLogsAsync<TData>(Expression<Func<Log<TData>, bool>> filter = null, FindOptions<Log<TData>, Log<TData>> options = null) =>
             await _mongoDBContext.GetAsync(filter, options);
 
         public void Dispose() =>

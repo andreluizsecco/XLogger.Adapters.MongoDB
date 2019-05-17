@@ -46,7 +46,7 @@ namespace XLogger.Adapters.MongoDB
         /// <param name="document">the document.</param>
         public async Task InsertOneAsync<TDocument>(TDocument document)
         {
-            var collection = await _database.GetCollectionAsync<TDocument>(_loggerOptions);
+            var collection = _database.GetCollection<TDocument>(_loggerOptions);
             await collection.InsertOneAsync(document);
         }
 
@@ -60,7 +60,9 @@ namespace XLogger.Adapters.MongoDB
         public IEnumerable<TDocument> Get<TDocument>(Expression<Func<TDocument, bool>> filter, FindOptions options = null)
         {
             var collection = _database.GetCollection<TDocument>(_loggerOptions);
-            return collection.Find(filter, options).ToList();
+            if (filter != null)
+                return collection.Find(filter, options).ToList();
+            return collection.Find(FilterDefinition<TDocument>.Empty, options).ToList();
         }
 
         /// <summary>
@@ -72,8 +74,10 @@ namespace XLogger.Adapters.MongoDB
         /// <returns>A list of documents.</returns>
         public async Task<IEnumerable<TDocument>> GetAsync<TDocument>(Expression<Func<TDocument, bool>> filter, FindOptions<TDocument, TDocument> options = null)
         {
-            var collection = await _database.GetCollectionAsync<TDocument>(_loggerOptions);
-            return (await collection.FindAsync(filter, options)).ToList();
+            var collection = _database.GetCollection<TDocument>(_loggerOptions);
+            if (filter != null)
+                return (await collection.FindAsync(filter, options)).ToList();
+            return (await collection.FindAsync(FilterDefinition<TDocument>.Empty, options)).ToList();
         }
     }
 }
