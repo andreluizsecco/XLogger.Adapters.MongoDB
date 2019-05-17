@@ -20,13 +20,15 @@ namespace XLogger
 
         /// <summary>
         /// Adds the new MongoDB logger with default options to logger hub.
+        /// If a XLogger:MongoDB section exists in the application settings, it will be used.
         /// </summary>
         /// <param name="hub">logger hub instance.</param>
         /// <returns>The logger hub.</returns>
         public static ILoggerHub AddMongoDB(this ILoggerHub hub)
         {
             var options = new MongoDBLoggerOptions();
-            options.ReadFromConfiguration(hub.Configuration);
+            if (hub.Configuration != null)
+                options.ReadFromConfiguration(hub.Configuration);
             return AddMongoDB(hub, new MongoDBLogger(options));
         }
 
