@@ -26,6 +26,9 @@ namespace XLogger.Adapters.MongoDB
                 
             ConventionRegistry.Register("EnumStringConvention", 
                 new ConventionPack { new EnumRepresentationConvention(BsonType.String) }, t => true);
+
+            ConventionRegistry.Register("IgnoreExtraElementsConvention",
+                new ConventionPack { new IgnoreExtraElementsConvention(true) }, t => true);
         }
 
         /// <summary>
