@@ -262,43 +262,43 @@ namespace XLogger.Adapters.MongoDB
             await WriteAsync(LogLevel.Critical, data, exception, formatter);
 
         /// <summary>
-        /// Gets the custom model log documents based on filter and the find options.
+        /// Gets a fluent find interface of the custom model log documents based on filter and the find options.
         /// </summary>
         /// <typeparam name="TDocument">your custom document model.</typeparam>
         /// <param name="filter">filter expression.</param>
         /// <param name="options">options for finding documents.</param>
-        /// <returns>A list of custom model log documents.</returns>
-        public IEnumerable<TDocument> GetCustomLogs<TDocument>(Expression<Func<TDocument, bool>> filter = null, FindOptions options = null) =>
+        /// <returns>A fluent find iterface of custom model log documents.</returns>
+        public IFindFluent<TDocument, TDocument> GetCustomLogs<TDocument>(Expression<Func<TDocument, bool>> filter = null, FindOptions options = null) =>
             _mongoDBContext.Get(filter, options);
 
         /// <summary>
-        /// Gets the custom model log documents based on filter and the find options.
+        /// Gets an async cursor of the custom model log documents based on filter and the find options.
         /// </summary>
         /// <typeparam name="TDocument">your custom document model.</typeparam>
         /// <param name="filter">filter expression.</param>
         /// <param name="options">options for finding documents.</param>
-        /// <returns>A list of custom model log documents.</returns>
-        public async Task<IEnumerable<TDocument>> GetCustomLogsAsync<TDocument>(Expression<Func<TDocument, bool>> filter = null, FindOptions<TDocument, TDocument> options = null) =>
+        /// <returns>An asynchronous cursor of custom model log documents.</returns>
+        public async Task<IAsyncCursor<TDocument>> GetCustomLogsAsync<TDocument>(Expression<Func<TDocument, bool>> filter = null, FindOptions<TDocument, TDocument> options = null) =>
             await _mongoDBContext.GetAsync(filter, options);
 
         /// <summary>
-        /// Gets the default model log documents based on filter and the find options.
+        /// Gets a fluent find interface of the default model log documents based on filter and the find options.
         /// </summary>
         /// <typeparam name="TData">the data type.</typeparam>
         /// <param name="filter">filter expression.</param>
         /// <param name="options">options for finding documents.</param>
-        /// <returns>A list of default model log documents.</returns>
-        public IEnumerable<Log<TData>> GetLogs<TData>(Expression<Func<Log<TData>, bool>> filter = null, FindOptions options = null) =>
+        /// <returns>A fluent find iterface of default model log documents.</returns>
+        public IFindFluent<Log<TData>, Log<TData>> GetLogs<TData>(Expression<Func<Log<TData>, bool>> filter = null, FindOptions options = null) =>
             _mongoDBContext.Get(filter, options);
 
         /// <summary>
-        /// Gets the default model log documents based on filter and the find options.
+        /// Gets an async cursor of the default model log documents based on filter and the find options.
         /// </summary>
         /// <typeparam name="TData">the data type.</typeparam>
         /// <param name="filter">filter expression.</param>
         /// <param name="options">options for finding documents.</param>
-        /// <returns>A list of default model log documents.</returns>
-        public async Task<IEnumerable<Log<TData>>> GetLogsAsync<TData>(Expression<Func<Log<TData>, bool>> filter = null, FindOptions<Log<TData>, Log<TData>> options = null) =>
+        /// <returns>An asynchronous cursor of default model log documents.</returns>
+        public async Task<IAsyncCursor<Log<TData>>> GetLogsAsync<TData>(Expression<Func<Log<TData>, bool>> filter = null, FindOptions<Log<TData>, Log<TData>> options = null) =>
             await _mongoDBContext.GetAsync(filter, options);
 
         public void Dispose() =>
