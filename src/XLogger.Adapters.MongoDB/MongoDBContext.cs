@@ -51,33 +51,33 @@ namespace XLogger.Adapters.MongoDB
         }
 
         /// <summary>
-        /// Gets the log documents based on filter and the find options.
+        /// Gets a fluent find interface the log documents based on filter and the find options.
         /// </summary>
         /// <typeparam name="TDocument">the document type.</typeparam>
         /// <param name="filter">filter expression.</param>
         /// <param name="options">options for finding documents.</param>
-        /// <returns>A list of documents.</returns>
-        public IEnumerable<TDocument> Get<TDocument>(Expression<Func<TDocument, bool>> filter, FindOptions options = null)
+        /// <returns>A fluent find iterface.</returns>
+        public IFindFluent<TDocument, TDocument> Get<TDocument>(Expression<Func<TDocument, bool>> filter, FindOptions options = null)
         {
             var collection = _database.GetCollection<TDocument>(_loggerOptions);
             if (filter != null)
-                return collection.Find(filter, options).ToList();
-            return collection.Find(FilterDefinition<TDocument>.Empty, options).ToList();
+                return collection.Find(filter, options);
+            return collection.Find(FilterDefinition<TDocument>.Empty, options);
         }
 
         /// <summary>
-        /// Gets the log documents based on filter and the find options.
+        /// Gets an async cursor of the log documents based on filter and the find options.
         /// </summary>
         /// <typeparam name="TDocument">the document type.</typeparam>
         /// <param name="filter">filter expression.</param>
         /// <param name="options">options for finding documents.</param>
-        /// <returns>A list of documents.</returns>
-        public async Task<IEnumerable<TDocument>> GetAsync<TDocument>(Expression<Func<TDocument, bool>> filter, FindOptions<TDocument, TDocument> options = null)
+        /// <returns>Asynchronous cursor of documents.</returns>
+        public async Task<IAsyncCursor<TDocument>> GetAsync<TDocument>(Expression<Func<TDocument, bool>> filter, FindOptions<TDocument, TDocument> options = null)
         {
             var collection = _database.GetCollection<TDocument>(_loggerOptions);
             if (filter != null)
-                return (await collection.FindAsync(filter, options)).ToList();
-            return (await collection.FindAsync(FilterDefinition<TDocument>.Empty, options)).ToList();
+                return await collection.FindAsync(filter, options);
+            return await collection.FindAsync(FilterDefinition<TDocument>.Empty, options);
         }
     }
 }
