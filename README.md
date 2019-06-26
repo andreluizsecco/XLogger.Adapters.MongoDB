@@ -28,9 +28,9 @@ Install-Package XLogger.Adapters.MongoDB
 ```
 dotnet add package XLogger.Adapters.MongoDB
 ```
-## How to Use
+## Documentation
 
-Check the our Wiki: [https://github.com/andreluizsecco/XLogger.Adapters.MongoDB/wiki/get-started](https://github.com/andreluizsecco/XLogger.Adapters.MongoDB/wiki/get-started)
+Check the our Wiki: [https://github.com/andreluizsecco/XLogger.Adapters.MongoDB/wiki](https://github.com/andreluizsecco/XLogger.Adapters.MongoDB/wiki)
 
 ## Roadmap
 
