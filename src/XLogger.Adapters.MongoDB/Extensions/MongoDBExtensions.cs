@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Threading.Tasks;
 using MongoDB.Driver;
 
 namespace XLogger.Adapters.MongoDB
