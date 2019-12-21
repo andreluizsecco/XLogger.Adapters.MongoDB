@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>XLogger.Adapters.MongoDB</PackageId>
-    <Version>1.1.0</Version>
+    <Version>1.2.0</Version>
     <Authors>André Secco</Authors>
     <Owners>andreluizsecco</Owners>
     <Product>XLogger.Adapters.MongoDB</Product>
@@ -23,7 +23,7 @@
   <ItemGroup>
     <PackageReference Include="XLogger" Version="1.1.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="2.2.0" />
-    <PackageReference Include="MongoDB.Driver" Version="2.9.1" />
+    <PackageReference Include="MongoDB.Driver" Version="2.10.0" />
   </ItemGroup>
 
   <ItemGroup>

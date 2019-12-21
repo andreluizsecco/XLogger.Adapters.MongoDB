@@ -19,8 +19,11 @@ namespace XLogger.Adapters.MongoDB
             {
                 var collectionOptions = new CreateCollectionOptions();
                 collectionOptions.Capped = options.Capped;
-                collectionOptions.MaxSize = options.MaxSize;
-                collectionOptions.MaxDocuments = options.MaxDocuments;
+                if (options.Capped)
+                {
+                    collectionOptions.MaxSize = options.MaxSize;
+                    collectionOptions.MaxDocuments = options.MaxDocuments;
+                }
 
                 database.CreateCollection(options.CollectionName, collectionOptions);
             }
